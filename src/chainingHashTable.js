@@ -1,13 +1,8 @@
-const TABLE_SIZE = 7;
-
-export const hashTableStorage = Array.from(
-  { length: TABLE_SIZE },
-  () => undefined,
-);
+export const hashTableStorage = Array.from({ length: 7 }, () => undefined);
 
 const calculateHashIndex = (input) => {
-  if (isNaN(input)) return input.length % TABLE_SIZE;
-  return input % TABLE_SIZE;
+  if (isNaN(input)) return input.length % 7;
+  return input % 7;
 };
 
 const ensureBucket = (bucketIndex) => {
@@ -17,6 +12,21 @@ const ensureBucket = (bucketIndex) => {
   return hashTableStorage[bucketIndex];
 };
 
+const findValueInTable = (searchValue) => {
+  const bucketIndex = calculateHashIndex(searchValue);
+  const bucket = hashTableStorage[bucketIndex];
+
+  if (!Array.isArray(bucket)) return null;
+
+  for (let index = 0; index < bucket.length; index++) {
+    if (bucket[index] == searchValue) {
+      return { bucketIndex, index };
+    }
+  }
+
+  return null;
+};
+
 export const hashTableOperations = {
   insertValue: (valueToInsert) => {
     const bucketIndex = calculateHashIndex(valueToInsert);
@@ -24,24 +34,22 @@ export const hashTableOperations = {
   },
 
   retrieveValue: (searchValue) => {
-    const bucketIndex = calculateHashIndex(searchValue);
-    const storedValue = hashTableStorage[bucketIndex];
-
-    if (Array.isArray(storedValue)) {
-      for (let index = 0; index < storedValue.length; index++) {
-        if (storedValue[index] == searchValue) return { bucketIndex, index };
-      }
-      return `valueDosen't exist`;
-    }
-    return { bucketIndex } || "value doesn't exist";
+    const result = findValueInTable(searchValue);
+    return result ?? "valueDosen't exist";
   },
-  deleteValue: (valueTodelete) => {
-    const value = hashTableOperations.retrieveValue(valueTodelete);
 
-    if (hashTableStorage[value.bucketIndex][value.index] !== undefined) {
-      hashTableStorage[value.bucketIndex][value.index] = undefined;
-    } else {
-      hashTableOperations[value.bucketIndex] = undefined;
+  deleteValue: (valueToDelete) => {
+    const result = findValueInTable(valueToDelete);
+
+    if (!result) return "valueDosen't exist";
+
+    const { bucketIndex, index } = result;
+    const bucket = hashTableStorage[bucketIndex];
+
+    bucket.splice(index, 1);
+
+    if (bucket.length === 0) {
+      hashTableStorage[bucketIndex] = undefined;
     }
   },
 };

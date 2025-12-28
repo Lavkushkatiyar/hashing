@@ -3,7 +3,10 @@ import { hashTableOperations } from "../src/chainingHashTable.js";
 import { hashTableStorage } from "../src/chainingHashTable.js";
 Deno.test("insert and retrieve a number", () => {
   hashTableOperations.insertValue(10);
-  assertEquals(hashTableOperations.retrieveValue(10), { bucketIndex: 3 });
+  assertEquals(hashTableOperations.retrieveValue(10), {
+    bucketIndex: 3,
+    index: 0,
+  });
 });
 
 Deno.test("same index valued using modulo 10 and 3", () => {
@@ -43,7 +46,6 @@ Deno.test("string length collision", () => {
     bucketIndex: 3,
     index: 4,
   });
-  console.log(hashTableStorage);
 });
 // -------------Delete Testes -----------------
 
@@ -53,5 +55,4 @@ Deno.test("deleting string abc", () => {
 });
 Deno.test("deleting string def", () => {
   hashTableOperations.deleteValue("def");
-  console.log(hashTableStorage);
 });
