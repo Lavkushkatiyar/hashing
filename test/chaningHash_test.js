@@ -51,3 +51,7 @@ Deno.test("deleting string abc", () => {
   hashTableOperations.deleteValue("abc");
   console.log(hashTableStorage);
 });
+Deno.test("deleting string def", () => {
+  hashTableOperations.deleteValue("def");
+  console.log(hashTableStorage);
+});
