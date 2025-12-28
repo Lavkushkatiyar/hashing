@@ -1,6 +1,4 @@
-const hashTableStorage = Array(7);
-
-const MAX_LOAD_FACTOR = 0.9;
+export const hashTableStorage = Array.from({ length: 7 }, () => undefined);
 
 const calculateHashIndex = (input) => {
   if (isNaN(input)) return input.length % 7;
@@ -13,17 +11,26 @@ export const hashTableOperations = {
     const bucket = hashTableStorage[bucketIndex];
 
     if (Array.isArray(bucket)) bucket.push(valueToInsert);
-    else if (bucket) hashTableStorage[bucketIndex] = [bucket, valueToInsert];
-    else hashTableStorage[bucketIndex] = valueToInsert;
+    else if (bucket || bucket === 0) {
+      hashTableStorage[bucketIndex] = [bucket, valueToInsert];
+    } else hashTableStorage[bucketIndex] = valueToInsert;
   },
 
   retrieveValue: (searchValue) => {
     const bucketIndex = calculateHashIndex(searchValue);
     const storedValue = hashTableStorage[bucketIndex];
-
     if (Array.isArray(storedValue)) {
-      return storedValue.some((value) => value === searchValue);
+      for (let index = 0; index < storedValue.length; index++) {
+        if (storedValue[index] == searchValue) return { bucketIndex, index };
+      }
+      return `valueDosen't exist`;
     }
-    return storedValue === searchValue || "value doesn't exist";
+    return { bucketIndex } || "value doesn't exist";
+  },
+  deleteValue: (valueTodelete) => {
+    const value = hashTableOperations.retrieveValue(valueTodelete);
+    if (hashTableStorage[value.bucketIndex][value.index] !== undefined) {
+      hashTableStorage[value.bucketIndex][value.index] = undefined;
+    } else hashTableOperations[value.bucketIndex] = undefined;
   },
 };
