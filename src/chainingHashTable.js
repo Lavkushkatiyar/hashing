@@ -1,8 +1,15 @@
-export const hashTableStorage = Array.from({ length: 7 }, () => undefined);
+const TABLE_SIZE = 7;
+export const hashTableStorage = Array.from(
+  { length: TABLE_SIZE },
+  () => undefined,
+);
 
-const calculateHashIndex = (input) => {
-  if (isNaN(input)) return input.length % 7;
-  return input % 7;
+const calculateHashIndex = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += Math.abs(str.charCodeAt(i) * str.length);
+  }
+  return hash % TABLE_SIZE;
 };
 
 const ensureBucket = (bucketIndex) => {
@@ -13,7 +20,7 @@ const ensureBucket = (bucketIndex) => {
 };
 
 const findValueInTable = (searchValue) => {
-  const bucketIndex = calculateHashIndex(searchValue);
+  const bucketIndex = calculateHashIndex(searchValue.toString());
   const bucket = hashTableStorage[bucketIndex];
 
   if (!Array.isArray(bucket)) return null;
@@ -23,19 +30,18 @@ const findValueInTable = (searchValue) => {
       return { bucketIndex, index };
     }
   }
-
   return null;
 };
 
 export const hashTableOperations = {
   insertValue: (valueToInsert) => {
-    const bucketIndex = calculateHashIndex(valueToInsert);
+    const bucketIndex = calculateHashIndex(valueToInsert.toString());
     ensureBucket(bucketIndex).push(valueToInsert);
   },
 
-  retrieveValue: (searchValue) => {
+  hasValue: (searchValue) => {
     const result = findValueInTable(searchValue);
-    return result ?? "valueDosen't exist";
+    return result ? true : false;
   },
 
   deleteValue: (valueToDelete) => {
