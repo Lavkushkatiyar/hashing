@@ -33,29 +33,34 @@ const findValueInTable = (searchValue) => {
   return null;
 };
 
-export const hashTableOperations = {
-  insertValue: (valueToInsert) => {
-    const bucketIndex = calculateHashIndex(valueToInsert.toString());
-    ensureBucket(bucketIndex).push(valueToInsert);
-  },
+export const hashTableOperations = () => {
+  return {
+    insertValue: (valueToInsert) => {
+      const bucketIndex = calculateHashIndex(valueToInsert.toString());
+      ensureBucket(bucketIndex).push(valueToInsert);
+    },
 
-  hasValue: (searchValue) => {
-    const result = findValueInTable(searchValue);
-    return result ? true : false;
-  },
+    hasValue: (searchValue) => {
+      const result = findValueInTable(searchValue);
+      return result ? true : false;
+    },
 
-  deleteValue: (valueToDelete) => {
-    const result = findValueInTable(valueToDelete);
+    deleteValue: (valueToDelete) => {
+      const result = findValueInTable(valueToDelete);
 
-    if (!result) return "valueDosen't exist";
+      if (!result) return "valueDosen't exist";
 
-    const { bucketIndex, index } = result;
-    const bucket = hashTableStorage[bucketIndex];
+      const { bucketIndex, index } = result;
+      const bucket = hashTableStorage[bucketIndex];
 
-    bucket.splice(index, 1);
+      bucket.splice(index, 1);
 
-    if (bucket.length === 0) {
-      hashTableStorage[bucketIndex] = undefined;
-    }
-  },
+      if (bucket.length === 0) {
+        hashTableStorage[bucketIndex] = undefined;
+      }
+    },
+  };
 };
+const myHashSet = hashTableOperations();
+console.log(myHashSet.insertValue(10));
+console.log(myHashSet.hasValue(11));
